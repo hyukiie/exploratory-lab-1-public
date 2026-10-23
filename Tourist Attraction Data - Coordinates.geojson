@@ -1,0 +1,225 @@
+{
+   "type": "FeatureCollection",
+   "features": [
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.11487076,49.34299368 ]
+    },
+    "properties": {
+    "ID":1,
+    "Tourist Attraction":"Capilano Suspension Bridge Park"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.13195236,49.29793709 ]
+    },
+    "properties": {
+    "ID":2,
+    "Tourist Attraction":"Stanley Park Horse-Drawn Tours"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.13323815,49.29457846 ]
+    },
+    "properties": {
+    "ID":3,
+    "Tourist Attraction":"Harbour Cruises"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.11219622,49.28503714 ]
+    },
+    "properties": {
+    "ID":4,
+    "Tourist Attraction":"Vancouver Lookout"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.12044259,49.28303543 ]
+    },
+    "properties": {
+    "ID":5,
+    "Tourist Attraction":"Vancouver Art Gallery"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.10398501,49.27975727 ]
+    },
+    "properties": {
+    "ID":6,
+    "Tourist Attraction":"Dr. Sun Yat-Sen Classical Chinese Garden"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.10374817,49.27369797 ]
+    },
+    "properties": {
+    "ID":7,
+    "Tourist Attraction":"Science World"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.14439396,49.27643946 ]
+    },
+    "properties": {
+    "ID":8,
+    "Tourist Attraction":"Museum of Vancouver"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.25945163,49.26965548 ]
+    },
+    "properties": {
+    "ID":9,
+    "Tourist Attraction":"Museum of Anthropology at UBC"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.25059189,49.25445355 ]
+    },
+    "properties": {
+    "ID":10,
+    "Tourist Attraction":"UBC Botanical Garden"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.25092479,49.26356203 ]
+    },
+    "properties": {
+    "ID":11,
+    "Tourist Attraction":"Beaty Biodiversity Museum"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.13261570,49.23970206 ]
+    },
+    "properties": {
+    "ID":12,
+    "Tourist Attraction":"VanDusan Botanical Garden"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.11377715,49.24223679 ]
+    },
+    "properties": {
+    "ID":13,
+    "Tourist Attraction":"Bloedel Conservatory"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.13080230,49.30060651 ]
+    },
+    "properties": {
+    "ID":14,
+    "Tourist Attraction":"Vancouver Aquarium"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.10074881,49.28044658 ]
+    },
+    "properties": {
+    "ID":15,
+    "Tourist Attraction":"Chinatown Storytelling Centre"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.11024802,49.28948625 ]
+    },
+    "properties": {
+    "ID":16,
+    "Tourist Attraction":"Flyover Experience"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.14665482,49.27753274 ]
+    },
+    "properties": {
+    "ID":17,
+    "Tourist Attraction":"Vancouver Maritime Museum"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.03614348,49.28177797 ]
+    },
+    "properties": {
+    "ID":18,
+    "Tourist Attraction":"Playland Amusement Park"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.10307007,49.28088508 ]
+    },
+    "properties": {
+    "ID":19,
+    "Tourist Attraction":"Chinese Canadian Museum"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ -123.10854628,49.28476951 ]
+    },
+    "properties": {
+    "ID":20,
+    "Tourist Attraction":"Gray Line Westcoast Sightseeing"
+    }
+  }
+]
+}
