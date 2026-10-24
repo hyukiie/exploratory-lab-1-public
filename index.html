@@ -130,7 +130,7 @@
       <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
       <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
       <!-- Grey Polygon / No Data Legend Item -->
-      <div class="legend-item"><span class="legend-color" style="background: #cccccc;"></span> No Data</div>
+      <div class="legend-item"><span class="legend-color" style="background: #808080;"></span> No Data</div>
       <!-- Tourist Attraction Legend Item -->
       <div class="legend-item" style="margin-top: 8px; border-top: 1px solid rgba(0,0,0,0.15); padding-top: 8px;">
         <span class="legend-point"></span> Tourist Attractions
@@ -154,6 +154,10 @@
       center: [-123.25, 49.26],
       zoom: 11,
       minZoom: 10
+      maxBounds: [
+        [-123.6, 49.1], 
+        [-122.8, 49.4]  
+      ]
     });
 
     map.addControl(new maplibregl.NavigationControl());
