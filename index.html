@@ -5,15 +5,67 @@
   <title>My map</title>
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-  <style> body { margin: 0; } #map { position: absolute; inset: 0; } </style>
+  <style>
+    body { margin: 0; }
+    #map { position: absolute; inset: 0; }
+    
+    /* Legend Styling */
+    #legend {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      background: white;
+      padding: 12px 15px;
+      font-family: sans-serif;
+      font-size: 13px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      z-index: 1;
+      line-height: 18px;
+      color: #333;
+    }
+    #legend h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .legend-scale {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-color {
+      width: 18px;
+      height: 14px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
   <div id="map"></div>
+
+  <!-- Legend HTML -->
+  <div id="legend">
+    <h4>June Price / Accommodate ($)</h4>
+    <div class="legend-scale">
+      <div class="legend-item"><span class="legend-color" style="background: #a50f15;"></span> 142.50 – 170.00</div>
+      <div class="legend-item"><span class="legend-color" style="background: #de2d26;"></span> 115.00 – 142.50</div>
+      <div class="legend-item"><span class="legend-color" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
+      <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
+      <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
+    </div>
+  </div>
+
   <script>
     const map = new maplibregl.Map({
       container: 'map',
-      style: '472_Lab1_firstDraft.json',        // the file you downloaded from Maputnik
-      center: [-123.25, 49.26],    // longitude, latitude
+      style: '472_Lab1_firstDraft.json',
+      center: [-123.25, 49.26],
       zoom: 11
     });
     map.addControl(new maplibregl.NavigationControl());
