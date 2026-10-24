@@ -177,8 +177,7 @@
       // 2. Click interaction for Tourist Attraction Points
       map.on('click', 'TA Points', (e) => {
         const props = e.features[0].properties;
-        // Adjust property key depending on what your GeoJSON uses for the name (e.g., "name" or "Title")
-        const attractionName = props.name || props.Title || props.NAME || "Tourist Attraction";
+        const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
 
         new maplibregl.Popup()
           .setLngLat(e.lngLat)
