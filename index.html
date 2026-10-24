@@ -44,7 +44,7 @@
       gap: 10px;
     }
     /* Boxes (for legend) */
-    .legend-colour {
+    .legend-color {
       width: 14px;
       height: 14px;
       border-radius: 2px;
@@ -69,7 +69,7 @@
     }
     .switch-label {
       font-weight: bold;
-      colour: #222222;
+      color: #222222;
     }
     .switch {
       position: relative;
@@ -86,7 +86,7 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-colour: #222222;
+      background-color: #222222;
       transition: .3s;
       border-radius: 24px;
     }
@@ -97,13 +97,13 @@
       width: 18px;
       left: 3px;
       bottom: 3px;
-      background-colour: black;
+      background-color: white;
       transition: .3s;
       border-radius: 50%;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
     input:checked + .slider-switch {
-      background-colour: #000000;
+      background-color: #000000;
     }
     input:checked + .slider-switch:before {
       transform: translateX(22px);
@@ -111,7 +111,7 @@
 
     /* MapLibre Popup Text Customization */
     .mapboxgl-popup-content, .maplibregl-popup-content {
-      colour: #333;
+      color: #333;
       font-family: sans-serif;
       font-size: 13px;
       padding: 10px 14px;
@@ -124,11 +124,11 @@
   <div id="legend">
     <h4 id="legend-title">June Price / Accommodate ($)</h4>
     <div class="legend-scale">
-      <div class="legend-item"><span class="legend-colour" style="background: #a50f15;"></span> 142.50 – 170.00</div>
-      <div class="legend-item"><span class="legend-colour" style="background: #de2d26;"></span> 115.00 – 142.50</div>
-      <div class="legend-item"><span class="legend-colour" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
-      <div class="legend-item"><span class="legend-colour" style="background: #fcae91;"></span> 60.00 – 87.50</div>
-      <div class="legend-item"><span class="legend-colour" style="background: #fee5d9;"></span> &lt; 60.00</div>
+      <div class="legend-item"><span class="legend-color" style="background: #a50f15;"></span> 142.50 – 170.00</div>
+      <div class="legend-item"><span class="legend-color" style="background: #de2d26;"></span> 115.00 – 142.50</div>
+      <div class="legend-item"><span class="legend-color" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
+      <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
+      <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
       <!-- Tourist Attraction Legend Item -->
       <div class="legend-item" style="margin-top: 8px; border-top: 1px solid rgba(0,0,0,0.15); padding-top: 8px;">
         <span class="legend-point"></span> Tourist Attractions
@@ -148,21 +148,20 @@
   <script>
     const map = new maplibregl.Map({
       container: 'map',
-      style: '472_Lab1_firstDraft.json', // Path to JSON file
-      center: [-123.25, 49.26],          // Longitude, latitude at UBC
-      zoom: 11,                          // Initial zoom level
-      minZoom: 10                        // Prevents zooming out past level 10
+      style: '472_Lab1_firstDraft.json',
+      center: [-123.25, 49.26],
+      zoom: 11,
+      minZoom: 10
     });
 
     map.addControl(new maplibregl.NavigationControl());
 
-    // Define colour scales for both months using the 60-170 range
-    const juneColourScale = [
+    const juneColorScale = [
       "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
 
-    const septColourScale = [
+    const septColorScale = [
       "interpolate", ["linear"], ["get", "sept_price_per_accommodate_mean"],
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
@@ -172,22 +171,20 @@
       const monthLabel = document.getElementById('month-label');
       const legendTitle = document.getElementById('legend-title');
 
-      // Switch event listener
       toggle.addEventListener('change', (e) => {
         if (!e.target.checked) {
           monthLabel.innerText = 'June';
           legendTitle.innerText = 'June Price / Accommodate ($)';
-          map.setPaintProperty('Airbnb-Polygons', 'fill-colour', juneColourScale);
+          map.setPaintProperty('Airbnb-Polygons', 'fill-color', juneColorScale);
         } else {
           monthLabel.innerText = 'September';
           legendTitle.innerText = 'September Price / Accommodate ($)';
-          map.setPaintProperty('Airbnb-Polygons', 'fill-colour', septColourScale);
+          map.setPaintProperty('Airbnb-Polygons', 'fill-color', septColorScale);
         }
       });
 
       // --- POPUP FUNCTIONALITY ---
 
-      // Click interaction only for Tourist Attraction Points using "Tourist Attraction" field
       map.on('click', 'TA Points', (e) => {
         const props = e.features[0].properties;
         const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
@@ -198,7 +195,6 @@
           .addTo(map);
       });
 
-      // Change cursor to pointer when hovering over tourist attraction points
       map.on('mouseenter', 'TA Points', () => {
         map.getCanvas().style.cursor = 'pointer';
       });
