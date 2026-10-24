@@ -158,31 +158,38 @@
         }
       });
 
-      // --- POPUP FUNCTIONALITY ---
+      // --- SINGLE UNIFIED CLICK HANDLER FOR POPUPS ---
+      map.on('click', (e) => {
+        // Query rendered features from both layers at the clicked point
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ['TA Points', 'Airbnb-Polygons']
+        });
 
-      // 1. Click interaction for Airbnb Polygons
-      map.on('click', 'Airbnb-Polygons', (e) => {
-        const props = e.features[0].properties;
-        const priceValue = props[currentMonthField];
-        // Handle cases where the value might be missing or null
-        const formattedPrice = priceValue !== undefined ? Number(priceValue).toFixed(2) : "N/A";
-        const neighbourhoodName = props.neighbourhood || "Neighbourhood";
+        if (features.length === 0) return;
 
-        new maplibregl.Popup()
-          .setLngLat(e.lngLat)
-          .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
-          .addTo(map);
-      });
+        // Take the topmost feature (TA Points renders on top of polygons)
+        const topFeature = features[0];
+        const layerId = topFeature.layer.id;
 
-      // 2. Click interaction for Tourist Attraction Points
-      map.on('click', 'TA Points', (e) => {
-        const props = e.features[0].properties;
-        const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
+        if (layerId === 'TA Points') {
+          const props = topFeature.properties;
+          const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
 
-        new maplibregl.Popup()
-          .setLngLat(e.lngLat)
-          .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
-          .addTo(map);
+          new maplibregl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
+            .addTo(map);
+        } else if (layerId === 'Airbnb-Polygons') {
+          const props = topFeature.properties;
+          const priceValue = props[currentMonthField];
+          const formattedPrice = priceValue !== undefined ? Number(priceValue).toFixed(2) : "N/A";
+          const neighbourhoodName = props.neighbourhood || "Neighbourhood";
+
+          new maplibregl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
+            .addTo(map);
+        }
       });
 
       // Change cursor to pointer when hovering over interactive layers
