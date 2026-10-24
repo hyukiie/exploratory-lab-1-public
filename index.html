@@ -9,7 +9,7 @@
     body { margin: 0; }
     #map { position: absolute; inset: 0; }
     
-    /* Legend & Control Box Styling */
+    /* Legend & Slider Styling */
     #legend {
       position: absolute;
       bottom: 20px;
@@ -24,11 +24,14 @@
       z-index: 1;
       width: 290px;
     }
+    /* Title formatting */
     #legend h4 {
       margin: 0 0 10px 0;
       font-size: 13px;
       font-weight: normal;
     }
+
+    /* Stacking legend points*/
     .legend-scale {
       display: flex;
       flex-direction: column;
@@ -40,10 +43,19 @@
       align-items: center;
       gap: 10px;
     }
+    /* Boxes (for legend) */
     .legend-color {
       width: 14px;
       height: 14px;
       border-radius: 2px;
+    }
+    /* Point symbol styling for legend */
+    .legend-point {
+      width: 12px;
+      height: 12px;
+      background: rgba(60, 124, 226, 1);
+      border: 1px solid #ffffff;
+      border-radius: 50%;
     }
     .slider-container {
       border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -61,6 +73,14 @@
       width: 100%;
       cursor: pointer;
     }
+
+    /* MapLibre Popup Text Customization */
+    .mapboxgl-popup-content, .maplibregl-popup-content {
+      color: #333;
+      font-family: sans-serif;
+      font-size: 13px;
+      padding: 10px 14px;
+    }
   </style>
 </head>
 <body>
@@ -74,6 +94,10 @@
       <div class="legend-item"><span class="legend-color" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
       <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
       <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
+      <!-- Tourist Attraction Legend Item -->
+      <div class="legend-item" style="margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px;">
+        <span class="legend-point"></span> Tourist Attractions
+      </div>
     </div>
     
     <!-- Interactive Month Slider -->
@@ -88,14 +112,14 @@
 
   <script>
     const map = new maplibregl.Map({
-    container: 'map',
-    style: '472_Lab1_firstDraft.json', // Path to JSON file
-    center: [-123.25, 49.26],          // Longitude, latitude at UBC
-    zoom: 11,                          // Initial zoom level
-    minZoom: 10                        // Prevents the user from zooming out past level 10
-  });
+      container: 'map',
+      style: '472_Lab1_firstDraft.json', // Path to JSON file
+      center: [-123.25, 49.26],          // Longitude, latitude at UBC
+      zoom: 11,                          // Initial zoom level
+      minZoom: 10                        // Prevents zooming out past level 10
+    });
 
-map.addControl(new maplibregl.NavigationControl());
+    map.addControl(new maplibregl.NavigationControl());
 
     // Define color scales for both months using the 60-170 range
     const juneColorScale = [
@@ -108,22 +132,69 @@ map.addControl(new maplibregl.NavigationControl());
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
 
-    // Slider event listener to update map paint property and UI text
+    // Track active month for dynamic popups
+    let currentMonthField = "june_price_per_accommodate_mean";
+    let currentMonthName = "June";
+
     map.on('load', () => {
       const slider = document.getElementById('month-slider');
       const monthLabel = document.getElementById('month-label');
       const legendTitle = document.getElementById('legend-title');
 
+      // Slider event listener
       slider.addEventListener('input', (e) => {
         if (e.target.value === '0') {
+          currentMonthName = 'June';
+          currentMonthField = 'june_price_per_accommodate_mean';
           monthLabel.innerText = 'June';
           legendTitle.innerText = 'June Price / Accommodate ($)';
           map.setPaintProperty('Airbnb-Polygons', 'fill-color', juneColorScale);
         } else {
+          currentMonthName = 'September';
+          currentMonthField = 'sept_price_per_accommodate_mean';
           monthLabel.innerText = 'September';
           legendTitle.innerText = 'September Price / Accommodate ($)';
           map.setPaintProperty('Airbnb-Polygons', 'fill-color', septColorScale);
         }
+      });
+
+      // --- POPUP FUNCTIONALITY ---
+
+      // 1. Click interaction for Airbnb Polygons
+      map.on('click', 'Airbnb-Polygons', (e) => {
+        const props = e.features[0].properties;
+        const priceValue = props[currentMonthField];
+        // Handle cases where the value might be missing or null
+        const formattedPrice = priceValue !== undefined ? Number(priceValue).toFixed(2) : "N/A";
+        const neighbourhoodName = props.neighbourhood || "Neighbourhood";
+
+        new maplibregl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
+          .addTo(map);
+      });
+
+      // 2. Click interaction for Tourist Attraction Points
+      map.on('click', 'TA Points', (e) => {
+        const props = e.features[0].properties;
+        // Adjust property key depending on what your GeoJSON uses for the name (e.g., "name" or "Title")
+        const attractionName = props.name || props.Title || props.NAME || "Tourist Attraction";
+
+        new maplibregl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
+          .addTo(map);
+      });
+
+      // Change cursor to pointer when hovering over interactive layers
+      const interactiveLayers = ['Airbnb-Polygons', 'TA Points'];
+      interactiveLayers.forEach(layerId => {
+        map.on('mouseenter', layerId, () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', layerId, () => {
+          map.getCanvas().style.cursor = '';
+        });
       });
     });
   </script>
