@@ -9,7 +9,7 @@
     body { margin: 0; }
     #map { position: absolute; inset: 0; }
     
-    /* Legend styled using the dark translucent reference layout */
+    /* Legend & Control Box Styling */
     #legend {
       position: absolute;
       bottom: 20px;
@@ -33,6 +33,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      margin-bottom: 14px;
     }
     .legend-item {
       display: flex;
@@ -44,20 +45,44 @@
       height: 14px;
       border-radius: 2px;
     }
+    .slider-container {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+    }
+    input[type=range] {
+      width: 100%;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
 
-  <!-- Legend positioned at bottom-left matching the reference coordinates and styling -->
   <div id="legend">
-    <h4>June Price / Accommodate ($)</h4>
+    <h4 id="legend-title">June Price / Accommodate ($)</h4>
     <div class="legend-scale">
       <div class="legend-item"><span class="legend-color" style="background: #a50f15;"></span> 142.50 – 170.00</div>
       <div class="legend-item"><span class="legend-color" style="background: #de2d26;"></span> 115.00 – 142.50</div>
       <div class="legend-item"><span class="legend-color" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
       <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
       <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
+    </div>
+    
+    <!-- Interactive Month Slider -->
+    <div class="slider-container">
+      <div class="slider-header">
+        <span>Month:</span>
+        <span id="month-label">June</span>
+      </div>
+      <input type="range" id="month-slider" min="0" max="1" step="1" value="0">
     </div>
   </div>
 
@@ -69,6 +94,36 @@
       zoom: 11
     });
     map.addControl(new maplibregl.NavigationControl());
+
+    // Define color scales for both months using the 60-170 range
+    const juneColorScale = [
+      "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
+      60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
+    ];
+
+    const septColorScale = [
+      "interpolate", ["linear"], ["get", "sept_price_per_accommodate_mean"],
+      60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
+    ];
+
+    // Slider event listener to update map paint property and UI text
+    map.on('load', () => {
+      const slider = document.getElementById('month-slider');
+      const monthLabel = document.getElementById('month-label');
+      const legendTitle = document.getElementById('legend-title');
+
+      slider.addEventListener('input', (e) => {
+        if (e.target.value === '0') {
+          monthLabel.innerText = 'June';
+          legendTitle.innerText = 'June Price / Accommodate ($)';
+          map.setPaintProperty('Airbnb-Polygons', 'fill-color', juneColorScale);
+        } else {
+          monthLabel.innerText = 'September';
+          legendTitle.innerText = 'September Price / Accommodate ($)';
+          map.setPaintProperty('Airbnb-Polygons', 'fill-color', septColorScale);
+        }
+      });
+    });
   </script>
 </body>
 </html>
