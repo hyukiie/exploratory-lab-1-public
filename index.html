@@ -3,72 +3,111 @@
 <head>
   <meta charset="utf-8">
   <title>My map</title>
+  <!-- MapLibre GL CSS and JS -->
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  
+  <!-- p5.js Library for drawing the legend overlay -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+  
   <style>
-    body { margin: 0; }
+    body { margin: 0; overflow: hidden; }
     #map { position: absolute; inset: 0; }
-    
-    /* Legend Styling */
-    #legend {
+    /* Ensure p5 canvas sits above the map but allows click-through interactivity */
+    canvas {
       position: absolute;
-      bottom: 30px;
-      right: 30px;
-      background: white;
-      padding: 12px 15px;
-      font-family: sans-serif;
-      font-size: 13px;
-      border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      z-index: 1;
-      line-height: 18px;
-      color: #333;
-    }
-    #legend h4 {
-      margin: 0 0 8px 0;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .legend-scale {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .legend-color {
-      width: 18px;
-      height: 14px;
-      border: 1px solid #ccc;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
-
-  <!-- Legend HTML -->
-  <div id="legend">
-    <h4>June Price / Accommodate ($)</h4>
-    <div class="legend-scale">
-      <div class="legend-item"><span class="legend-color" style="background: #a50f15;"></span> 142.50 – 170.00</div>
-      <div class="legend-item"><span class="legend-color" style="background: #de2d26;"></span> 115.00 – 142.50</div>
-      <div class="legend-item"><span class="legend-color" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
-      <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
-      <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
-    </div>
-  </div>
-
   <script>
+    // Initialize the MapLibre GL map
     const map = new maplibregl.Map({
       container: 'map',
-      style: '472_Lab1_firstDraft.json',
-      center: [-123.25, 49.26],
-      zoom: 11
+      style: '472_Lab1_firstDraft.json',[cite: 1, 2]
+      center: [-123.25, 49.26],    //[cite: 2] Longitude, latitude centered on UBC/Vancouver area
+      zoom: 11                     //[cite: 2] Initial zoom level
     });
+    
     map.addControl(new maplibregl.NavigationControl());
+
+    // p5.js setup function
+    function setup() {
+      let cnv = createCanvas(windowWidth, windowHeight);
+      cnv.parent('map');
+    }
+
+    // Handle window resizing for the p5 canvas
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    // p5.js draw loop
+    function draw() {
+      clear(); // Clears canvas each frame so the map underneath remains visible
+      drawLegend();
+    }
+
+    // Legend drawing function
+    function drawLegend() {
+      const x = 20, y = height - 210;
+      noStroke();
+      fill(0, 0, 0, 170);
+      rect(x - 10, y - 30, 310, 205, 6);
+      
+      fill(255);
+      textSize(13);
+      textAlign(LEFT, BASELINE);
+      text("Map Legend", x, y - 10);
+      
+      // Tourist Attractions (TA Points) symbol
+      fill(60, 124, 226);
+      stroke(255);
+      strokeWeight(1);
+      ellipse(x + 8, y + 15, 10, 10);
+      noStroke();
+      fill(255);
+      text("Tourist Attractions", x + 28, y + 19);
+      
+      // Airbnb Price Title
+      text("Airbnb June Price per Accommodate ($)", x, y + 50);
+      
+      // Color stops matching Airbnb-Polygons interpolate values from style
+      const colors = [
+        color(254, 229, 217), // #fee5d9
+        color(252, 174, 145), // #fcae91
+        color(251, 106, 74),  // #fb6a4a
+        color(222, 45, 38),   // #de2d26
+        color(165, 15, 21)    // #a50f15
+      ];
+      
+      const labels = ["$60", "$87.5", "$115", "$142.5", "$170+"];
+      
+      let swatchWidth = 52;
+      let swatchHeight = 14;
+      let startX = x;
+      let startY = y + 68;
+      
+      // Draw color gradient swatches
+      for (let i = 0; i < colors.length; i++) {
+        fill(colors[i]);
+        noStroke();
+        rect(startX + i * swatchWidth, startY, swatchWidth, swatchHeight);
+      }
+      
+      // Draw corresponding price labels below swatches
+      fill(255);
+      textSize(10);
+      textAlign(CENTER, BASELINE);
+      for (let i = 0; i < labels.length; i++) {
+        text(labels[i], startX + i * swatchWidth + swatchWidth / 2, startY + swatchHeight + 16);
+      }
+    }
   </script>
 </body>
 </html>
