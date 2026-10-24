@@ -159,13 +159,23 @@
     map.addControl(new maplibregl.NavigationControl());
 
     const juneColorScale = [
-      "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
-      60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
+      "case",
+      ["==", ["get", "june_price_per_accommodate_mean"], null],
+      "#808080",
+      [
+        "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
+        60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
+      ]
     ];
 
     const septColorScale = [
-      "interpolate", ["linear"], ["get", "sept_price_per_accommodate_mean"],
-      60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
+      "case",
+      ["==", ["get", "sept_price_per_accommodate_mean"], null],
+      "#808080",
+      [
+        "interpolate", ["linear"], ["get", "sept_price_per_accommodate_mean"],
+        60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
+      ]
     ];
 
     map.on('load', () => {
