@@ -113,15 +113,14 @@
   <script>
     const map = new maplibregl.Map({
       container: 'map',
-      style: '472_Lab1_firstDraft.json', // Path to JSON file
-      center: [-123.25, 49.26],          // Longitude, latitude at UBC
-      zoom: 11,                          // Initial zoom level
-      minZoom: 10                        // Prevents zooming out past level 10
+      style: '472_Lab1_firstDraft.json',
+      center: [-123.25, 49.26],
+      zoom: 11,
+      minZoom: 10
     });
 
     map.addControl(new maplibregl.NavigationControl());
 
-    // Define color scales for both months using the 60-170 range
     const juneColorScale = [
       "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
@@ -132,7 +131,6 @@
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
 
-    // Track active month for dynamic popups
     let currentMonthField = "june_price_per_accommodate_mean";
     let currentMonthName = "June";
 
@@ -141,7 +139,6 @@
       const monthLabel = document.getElementById('month-label');
       const legendTitle = document.getElementById('legend-title');
 
-      // Slider event listener
       slider.addEventListener('input', (e) => {
         if (e.target.value === '0') {
           currentMonthName = 'June';
@@ -158,18 +155,16 @@
         }
       });
 
-      // --- SINGLE UNIFIED CLICK HANDLER FOR POPUPS ---
+      // Unified click handler with safe optional chaining
       map.on('click', (e) => {
-        // Query rendered features from both layers at the clicked point
         const features = map.queryRenderedFeatures(e.point, {
           layers: ['TA Points', 'Airbnb-Polygons']
         });
 
         if (features.length === 0) return;
 
-        // Take the topmost feature (TA Points renders on top of polygons)
         const topFeature = features[0];
-        const layerId = topFeature.layer.id;
+        const layerId = topFeature.layer?.id;
 
         if (layerId === 'TA Points') {
           const props = topFeature.properties;
@@ -192,7 +187,6 @@
         }
       });
 
-      // Change cursor to pointer when hovering over interactive layers
       const interactiveLayers = ['Airbnb-Polygons', 'TA Points'];
       interactiveLayers.forEach(layerId => {
         map.on('mouseenter', layerId, () => {
