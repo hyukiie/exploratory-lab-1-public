@@ -19,7 +19,7 @@
       font-family: sans-serif;
       font-size: 13px;
       border-radius: 6px;
-      color: #ffffff;
+      colour: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       z-index: 1;
       width: 290px;
@@ -44,7 +44,7 @@
       gap: 10px;
     }
     /* Boxes (for legend) */
-    .legend-color {
+    .legend-colour {
       width: 14px;
       height: 14px;
       border-radius: 2px;
@@ -84,7 +84,7 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(255, 255, 255, 0.3);
+      background-colour: rgba(255, 255, 255, 0.3);
       transition: .3s;
       border-radius: 24px;
     }
@@ -95,12 +95,12 @@
       width: 18px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
+      background-colour: white;
       transition: .3s;
       border-radius: 50%;
     }
     input:checked + .slider-switch {
-      background-color: #de2d26;
+      background-colour: #de2d26;
     }
     input:checked + .slider-switch:before {
       transform: translateX(22px);
@@ -108,7 +108,7 @@
 
     /* MapLibre Popup Text Customization */
     .mapboxgl-popup-content, .maplibregl-popup-content {
-      color: #333;
+      colour: #333;
       font-family: sans-serif;
       font-size: 13px;
       padding: 10px 14px;
@@ -121,11 +121,11 @@
   <div id="legend">
     <h4 id="legend-title">June Price / Accommodate ($)</h4>
     <div class="legend-scale">
-      <div class="legend-item"><span class="legend-color" style="background: #a50f15;"></span> 142.50 – 170.00</div>
-      <div class="legend-item"><span class="legend-color" style="background: #de2d26;"></span> 115.00 – 142.50</div>
-      <div class="legend-item"><span class="legend-color" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
-      <div class="legend-item"><span class="legend-color" style="background: #fcae91;"></span> 60.00 – 87.50</div>
-      <div class="legend-item"><span class="legend-color" style="background: #fee5d9;"></span> &lt; 60.00</div>
+      <div class="legend-item"><span class="legend-colour" style="background: #a50f15;"></span> 142.50 – 170.00</div>
+      <div class="legend-item"><span class="legend-colour" style="background: #de2d26;"></span> 115.00 – 142.50</div>
+      <div class="legend-item"><span class="legend-colour" style="background: #fb6a4a;"></span> 87.50 – 115.00</div>
+      <div class="legend-item"><span class="legend-colour" style="background: #fcae91;"></span> 60.00 – 87.50</div>
+      <div class="legend-item"><span class="legend-colour" style="background: #fee5d9;"></span> &lt; 60.00</div>
       <!-- Tourist Attraction Legend Item -->
       <div class="legend-item" style="margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px;">
         <span class="legend-point"></span> Tourist Attractions
@@ -153,13 +153,13 @@
 
     map.addControl(new maplibregl.NavigationControl());
 
-    // Define color scales for both months using the 60-170 range
-    const juneColorScale = [
+    // Define colour scales for both months using the 60-170 range
+    const juneColourScale = [
       "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
 
-    const septColorScale = [
+    const septColourScale = [
       "interpolate", ["linear"], ["get", "sept_price_per_accommodate_mean"],
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
@@ -174,11 +174,11 @@
         if (!e.target.checked) {
           monthLabel.innerText = 'June';
           legendTitle.innerText = 'June Price / Accommodate ($)';
-          map.setPaintProperty('Airbnb-Polygons', 'fill-color', juneColorScale);
+          map.setPaintProperty('Airbnb-Polygons', 'fill-colour', juneColourScale);
         } else {
           monthLabel.innerText = 'September';
           legendTitle.innerText = 'September Price / Accommodate ($)';
-          map.setPaintProperty('Airbnb-Polygons', 'fill-color', septColorScale);
+          map.setPaintProperty('Airbnb-Polygons', 'fill-colour', septColourScale);
         }
       });
 
