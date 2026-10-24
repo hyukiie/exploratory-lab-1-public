@@ -113,14 +113,15 @@
   <script>
     const map = new maplibregl.Map({
       container: 'map',
-      style: '472_Lab1_firstDraft.json',
-      center: [-123.25, 49.26],
-      zoom: 11,
-      minZoom: 10
+      style: '472_Lab1_firstDraft.json', // Path to JSON file
+      center: [-123.25, 49.26],          // Longitude, latitude at UBC
+      zoom: 11,                          // Initial zoom level
+      minZoom: 10                        // Prevents zooming out past level 10
     });
 
     map.addControl(new maplibregl.NavigationControl());
 
+    // Define color scales for both months using the 60-170 range
     const juneColorScale = [
       "interpolate", ["linear"], ["get", "june_price_per_accommodate_mean"],
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
@@ -131,70 +132,43 @@
       60, "#fee5d9", 87.5, "#fcae91", 115, "#fb6a4a", 142.5, "#de2d26", 170, "#a50f15"
     ];
 
-    let currentMonthField = "june_price_per_accommodate_mean";
-    let currentMonthName = "June";
-
     map.on('load', () => {
       const slider = document.getElementById('month-slider');
       const monthLabel = document.getElementById('month-label');
       const legendTitle = document.getElementById('legend-title');
 
+      // Slider event listener
       slider.addEventListener('input', (e) => {
         if (e.target.value === '0') {
-          currentMonthName = 'June';
-          currentMonthField = 'june_price_per_accommodate_mean';
           monthLabel.innerText = 'June';
           legendTitle.innerText = 'June Price / Accommodate ($)';
           map.setPaintProperty('Airbnb-Polygons', 'fill-color', juneColorScale);
         } else {
-          currentMonthName = 'September';
-          currentMonthField = 'sept_price_per_accommodate_mean';
           monthLabel.innerText = 'September';
           legendTitle.innerText = 'September Price / Accommodate ($)';
           map.setPaintProperty('Airbnb-Polygons', 'fill-color', septColorScale);
         }
       });
 
-      // Unified click handler with safe optional chaining
-      map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: ['TA Points', 'Airbnb-Polygons']
-        });
+      // --- POPUP FUNCTIONALITY ---
 
-        if (features.length === 0) return;
+      // Click interaction only for Tourist Attraction Points using "Tourist Attraction" field
+      map.on('click', 'TA Points', (e) => {
+        const props = e.features[0].properties;
+        const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
 
-        const topFeature = features[0];
-        const layerId = topFeature.layer?.id;
-
-        if (layerId === 'TA Points') {
-          const props = topFeature.properties;
-          const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
-
-          new maplibregl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
-            .addTo(map);
-        } else if (layerId === 'Airbnb-Polygons') {
-          const props = topFeature.properties;
-          const priceValue = props[currentMonthField];
-          const formattedPrice = priceValue !== undefined ? Number(priceValue).toFixed(2) : "N/A";
-          const neighbourhoodName = props.neighbourhood || "Neighbourhood";
-
-          new maplibregl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
-            .addTo(map);
-        }
+        new maplibregl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
+          .addTo(map);
       });
 
-      const interactiveLayers = ['Airbnb-Polygons', 'TA Points'];
-      interactiveLayers.forEach(layerId => {
-        map.on('mouseenter', layerId, () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', layerId, () => {
-          map.getCanvas().style.cursor = '';
-        });
+      // Change cursor to pointer when hovering over tourist attraction points
+      map.on('mouseenter', 'TA Points', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+      map.on('mouseleave', 'TA Points', () => {
+        map.getCanvas().style.cursor = '';
       });
     });
   </script>
