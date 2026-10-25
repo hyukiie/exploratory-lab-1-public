@@ -9,7 +9,7 @@
     body { margin: 0; }
     #map { position: absolute; inset: 0; }
     
-    /* Legend & Toggle Switch Styling - Lighter background for improved legibility */
+    /* Legend & Switch Styling */
     #legend {
       position: absolute;
       bottom: 20px;
@@ -43,7 +43,7 @@
       align-items: center;
       gap: 10px;
     }
-    /* Boxes (for legend) */
+    /* Boxes for legend */
     .legend-color {
       width: 14px;
       height: 14px;
@@ -59,7 +59,7 @@
       border-radius: 50%;
     }
 
-    /* Toggle Switch Container & Design */
+    /* Toggle Switch Design */
     .switch-container {
       border-top: 1px solid rgba(0, 0, 0, 0.15);
       padding-top: 12px;
@@ -161,7 +161,7 @@
     });
 
     map.addControl(new maplibregl.NavigationControl());
-
+    // Colors for Airbnb Polygons
     const juneColorScale = [
       "case",
       ["==", ["get", "june_price_per_accommodate_mean"], null],
@@ -182,7 +182,7 @@
       ]
     ];
 
-    // Track active month field and label for popups
+    // Track active month field and label for polygon popups
     let currentMonthField = "june_price_per_accommodate_mean";
     let currentMonthName = "June";
 
@@ -229,18 +229,13 @@
         }
 
         // Otherwise have Airbnb Polygon popup
-        const polyFeature = features.find(f => f.layer.id === 'Airbnb-Polygons');
+        const polyFeature = features.find(f => f.layer.id === 'Airbnb-Polygons'); //find polygon
         if (polyFeature) {
           const props = polyFeature.properties;
-          const priceValue = props[currentMonthField];
+          const priceValue = props[currentMonthField]; //takes price
           const formattedPrice = (priceValue !== null && priceValue !== undefined) ? Number(priceValue).toFixed(2) : "N/A";
           
-          const nameKey = Object.keys(props).find(k => 
-            k.toLowerCase().includes('name') || 
-            k.toLowerCase().includes('neighbourhood') || 
-            k.toLowerCase().includes('neighborhood')
-          );
-          const neighbourhoodName = nameKey ? props[nameKey] : "Neighbourhood";
+          const neighbourhoodName = props.neighbourhood || "Neighbourhood";
 
           new maplibregl.Popup({ closeOnClick: true })
             .setLngLat(e.lngLat)
