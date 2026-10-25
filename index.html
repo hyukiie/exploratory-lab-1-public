@@ -191,6 +191,14 @@
       const monthLabel = document.getElementById('month-label');
       const legendTitle = document.getElementById('legend-title');
 
+      map.setLayoutProperty('TA Points', 'icon-size', [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        10, 0.5, // At zoom 10, icon scale is 0.5
+        15, 1,  // At zoom 15, icon scale is 1.2
+        ]);
+
       toggle.addEventListener('change', (e) => {
         if (!e.target.checked) {
           currentMonthName = 'June';
