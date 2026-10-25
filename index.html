@@ -153,7 +153,11 @@
       style: '472_Lab1_Final.json',
       center: [-123.25, 49.26],
       zoom: 11,
-      minZoom: 10
+      minZoom: 10,
+      maxBounds: [
+        [-123.6, 49.1],
+        [-122.8, 49.4]
+      ]
     });
 
     map.addControl(new maplibregl.NavigationControl());
@@ -178,6 +182,10 @@
       ]
     ];
 
+    // Track active month field and label globally for popups
+    let currentMonthField = "june_price_per_accommodate_mean";
+    let currentMonthName = "June";
+
     map.on('load', () => {
       const toggle = document.getElementById('month-toggle');
       const monthLabel = document.getElementById('month-label');
@@ -185,10 +193,14 @@
 
       toggle.addEventListener('change', (e) => {
         if (!e.target.checked) {
+          currentMonthName = 'June';
+          currentMonthField = 'june_price_per_accommodate_mean';
           monthLabel.innerText = 'June';
           legendTitle.innerText = 'June Price / Accommodate ($)';
           map.setPaintProperty('Airbnb-Polygons', 'fill-color', juneColorScale);
         } else {
+          currentMonthName = 'September';
+          currentMonthField = 'sept_price_per_accommodate_mean';
           monthLabel.innerText = 'September';
           legendTitle.innerText = 'September Price / Accommodate ($)';
           map.setPaintProperty('Airbnb-Polygons', 'fill-color', septColorScale);
@@ -197,21 +209,46 @@
 
       // --- POPUP FUNCTIONALITY ---
 
+      // 1. Click interaction for Airbnb Polygons (with automatic single-popup behavior)
+      map.on('click', 'Airbnb-Polygons', (e) => {
+        const props = e.features[0].properties;
+        const priceValue = props[currentMonthField];
+        const formattedPrice = (priceValue !== null && priceValue !== undefined) ? Number(priceValue).toFixed(2) : "N/A";
+        
+        // Dynamically find neighborhood name property
+        const nameKey = Object.keys(props).find(k => 
+          k.toLowerCase().includes('name') || 
+          k.toLowerCase().includes('neighbourhood') || 
+          k.toLowerCase().includes('neighborhood')
+        );
+        const neighbourhoodName = nameKey ? props[nameKey] : "Neighbourhood";
+
+        new maplibregl.Popup({ closeOnClick: true })
+          .setLngLat(e.lngLat)
+          .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
+          .addTo(map);
+      });
+
+      // 2. Click interaction for Tourist Attraction Points
       map.on('click', 'TA Points', (e) => {
         const props = e.features[0].properties;
-        const attractionName = props["Tourist Attraction"] || "Tourist Attraction";
+        const attractionName = props["Tourist Attraction"] || props.name || "Tourist Attraction";
 
-        new maplibregl.Popup()
+        new maplibregl.Popup({ closeOnClick: true })
           .setLngLat(e.lngLat)
           .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
           .addTo(map);
       });
 
-      map.on('mouseenter', 'TA Points', () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-      map.on('mouseleave', 'TA Points', () => {
-        map.getCanvas().style.cursor = '';
+      // Cursor pointer changes for interactive layers
+      const interactiveLayers = ['Airbnb-Polygons', 'TA Points'];
+      interactiveLayers.forEach(layerId => {
+        map.on('mouseenter', layerId, () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', layerId, () => {
+          map.getCanvas().style.cursor = '';
+        });
       });
     });
   </script>
