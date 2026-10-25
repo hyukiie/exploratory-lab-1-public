@@ -191,15 +191,6 @@
       const monthLabel = document.getElementById('month-label');
       const legendTitle = document.getElementById('legend-title');
 
-      // Add zoom scaling for tourist attractions here:
-    map.setPaintProperty('TA Points', 'circle-radius', [
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      10, 4,
-      15, 9
-      ]);
-
       toggle.addEventListener('change', (e) => {
         if (!e.target.checked) {
           currentMonthName = 'June';
