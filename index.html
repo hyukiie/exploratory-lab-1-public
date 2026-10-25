@@ -243,17 +243,6 @@
             .addTo(map);
         }
       });
-
-      // Cursor pointer changes for interactive layers
-      const interactiveLayers = ['Airbnb-Polygons', 'TA Points'];
-      interactiveLayers.forEach(layerId => {
-        map.on('mouseenter', layerId, () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-        map.on('mouseleave', layerId, () => {
-          map.getCanvas().style.cursor = '';
-        });
-      });
     });
   </script>
 </body>
