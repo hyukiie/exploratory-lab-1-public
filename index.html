@@ -182,7 +182,7 @@
       ]
     ];
 
-    // Track active month field and label globally for popups
+    // Track active month field and label for popups
     let currentMonthField = "june_price_per_accommodate_mean";
     let currentMonthName = "June";
 
@@ -207,37 +207,46 @@
         }
       });
 
-      // --- POPUP FUNCTIONALITY ---
+      // Stops overlapping popups
+      map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ['TA Points', 'Airbnb-Polygons']
+        });
 
-      // 1. Click interaction for Airbnb Polygons (with automatic single-popup behavior)
-      map.on('click', 'Airbnb-Polygons', (e) => {
-        const props = e.features[0].properties;
-        const priceValue = props[currentMonthField];
-        const formattedPrice = (priceValue !== null && priceValue !== undefined) ? Number(priceValue).toFixed(2) : "N/A";
-        
-        // Dynamically find neighborhood name property
-        const nameKey = Object.keys(props).find(k => 
-          k.toLowerCase().includes('name') || 
-          k.toLowerCase().includes('neighbourhood') || 
-          k.toLowerCase().includes('neighborhood')
-        );
-        const neighbourhoodName = nameKey ? props[nameKey] : "Neighbourhood";
+        if (features.length === 0) return;
 
-        new maplibregl.Popup({ closeOnClick: true })
-          .setLngLat(e.lngLat)
-          .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
-          .addTo(map);
-      });
+        // Prioritize Tourist Attraction points so polygon doesn't have pop up
+        const taFeature = features.find(f => f.layer.id === 'TA Points');
+        if (taFeature) {
+          const props = taFeature.properties;
+          const attractionName = props["Tourist Attraction"] || props.name || "Tourist Attraction";
 
-      // 2. Click interaction for Tourist Attraction Points
-      map.on('click', 'TA Points', (e) => {
-        const props = e.features[0].properties;
-        const attractionName = props["Tourist Attraction"] || props.name || "Tourist Attraction";
+          new maplibregl.Popup({ closeOnClick: true })
+            .setLngLat(e.lngLat)
+            .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
+            .addTo(map);
+          return;
+        }
 
-        new maplibregl.Popup({ closeOnClick: true })
-          .setLngLat(e.lngLat)
-          .setHTML(`<strong>Tourist Attraction</strong><br>${attractionName}`)
-          .addTo(map);
+        // Otherwise have Airbnb Polygon popup
+        const polyFeature = features.find(f => f.layer.id === 'Airbnb-Polygons');
+        if (polyFeature) {
+          const props = polyFeature.properties;
+          const priceValue = props[currentMonthField];
+          const formattedPrice = (priceValue !== null && priceValue !== undefined) ? Number(priceValue).toFixed(2) : "N/A";
+          
+          const nameKey = Object.keys(props).find(k => 
+            k.toLowerCase().includes('name') || 
+            k.toLowerCase().includes('neighbourhood') || 
+            k.toLowerCase().includes('neighborhood')
+          );
+          const neighbourhoodName = nameKey ? props[nameKey] : "Neighbourhood";
+
+          new maplibregl.Popup({ closeOnClick: true })
+            .setLngLat(e.lngLat)
+            .setHTML(`<strong>${neighbourhoodName}</strong><br>${currentMonthName} Price / Accommodate: $${formattedPrice}`)
+            .addTo(map);
+        }
       });
 
       // Cursor pointer changes for interactive layers
