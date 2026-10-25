@@ -508,7 +508,7 @@
           "interpolate",
           ["linear"],
           ["zoom"],
-          10, 2,
+          10, 1,
           11, 6
         ]
       }
